@@ -15,9 +15,16 @@ import org.apache.mahout.cf.taste.recommender.UserBasedRecommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 
 
-import java.io.*;
-
-import java.util.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.FileInputStream;
+import java.io.Reader;
+import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.zip.GZIPInputStream;
 
 public class MovieRecommender {
@@ -98,31 +105,17 @@ public class MovieRecommender {
         this.closeCSV();
     }
 
-    public BiMap<Integer, String> getMap(BiMap<Integer, String> biMap, String data){
-        int id = 1;
-        if(!biMap.containsKey(data)){
-            biMap.put(id,data);
-            id++;
-        }
-        return biMap;
-    }
-
 
 
     private void writeCSV(){
         try {
+            String lineToAppend;
             for (int i = 0; i < this.usersIdArray.size()-1; i++) {
                 Integer idUser = this.mapUsers.inverse().get(this.usersIdArray.get(i));
-                this.fileWriter.append(String.valueOf(idUser));
-                this.fileWriter.append(",");
-
                 Integer idProduct = this.mapProducts.inverse().get(this.productsIdArray.get(i));
-                this.fileWriter.append(String.valueOf(idProduct));
-                this.fileWriter.append(",");
 
-                this.fileWriter.append(String.valueOf(this.reviewsArray.get(i)));
-
-                this.fileWriter.append('\n');
+                lineToAppend = idUser + "," + idProduct + "," + this.reviewsArray.get(i) + "\n";
+                this.fileWriter.append(lineToAppend);
             }
         } catch (IOException e) {
             e.printStackTrace();
